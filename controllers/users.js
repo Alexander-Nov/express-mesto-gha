@@ -43,11 +43,6 @@ const createUser = (req, res) => {
 
 const updateUserProfile = (req, res) => {
   const { name, about } = req.body;
-
-  if (!name || !about) {
-    res.status(errorCodes.ValidationError).send({ message: 'Переданы некорректные данные при обновлении пользователя, одно или несколько полей пустые' });
-  }
-
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ user }))
     .catch((err) => {
