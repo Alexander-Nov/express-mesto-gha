@@ -24,6 +24,11 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
+    .orFail(() => {
+      const error = new Error('Карточка по заданному id отсутствует в базе');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err instanceof NotFoundError) {
@@ -42,6 +47,11 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(() => {
+      const error = new Error('Карточка по заданному id отсутствует в базе');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((card) => {
       res.send({ data: card });
     })
@@ -62,6 +72,11 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(() => {
+      const error = new Error('Карточка по заданному id отсутствует в базе');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((card) => {
       res.send({ data: card });
     })

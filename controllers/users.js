@@ -10,12 +10,19 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   User.findById(req.params.id)
+    .orFail(() => {
+      const error = new Error('Пользователь по заданному id отсутствует в базе');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((user) => {
       res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(errorCodes.NotFoundError).send({ message: 'Пользователь по указанному id не найден' });
+      } else if (err.name === 'ValidationError') {
+        res.status(errorCodes.ValidationError).send({ message: 'Введены некорректные данные при создании пользователя' });
       } else {
         res.status(errorCodes.DefaultError).send({ message: 'Произошла ошибка' });
       }
