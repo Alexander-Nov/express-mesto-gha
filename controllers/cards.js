@@ -1,6 +1,5 @@
 const Card = require('../models/card');
 const errorCodes = require('../errors/errorCodes');
-const NotFoundError = require('../errors/NotFoundError');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -56,10 +55,10 @@ const likeCard = (req, res) => {
       res.send({ data: card });
     })
     .catch((err) => {
-      if (err instanceof NotFoundError) {
-        res.status(errorCodes.NotFoundError).send({ message: 'Передан несуществующий id карточки' });
-      } else if (err.name === 'CastError') {
+      if (err.name === 'CastError') {
         res.status(errorCodes.ValidationError).send({ message: 'Переданы некорректные данные для постановки лайка' });
+      } else if (err.statusCode === 404) {
+        res.status(errorCodes.NotFoundError).send({ message: 'Передан несуществующий id карточки' });
       } else {
         res.status(errorCodes.DefaultError).send({ message: 'Произошла ошибка' });
       }
