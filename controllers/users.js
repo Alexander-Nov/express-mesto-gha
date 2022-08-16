@@ -20,9 +20,9 @@ const getUserById = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(errorCodes.NotFoundError).send({ message: 'Пользователь по указанному id не найден' });
-      } else if (err.name === 'ValidationError') {
         res.status(errorCodes.ValidationError).send({ message: 'Введены некорректные данные при создании пользователя' });
+      } else if (err.statusCode === 404) {
+        res.status(errorCodes.NotFoundError).send({ message: 'Пользователь по указанному id не найден' });
       } else {
         res.status(errorCodes.DefaultError).send({ message: 'Произошла ошибка' });
       }
