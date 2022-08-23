@@ -22,18 +22,31 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findById(req.params.id)
     .orFail(() => {
       const error = new Error('Карточка по заданному id отсутствует в базе');
       error.statusCode = 404;
       throw error;
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      const cardOwner = card.owner.toString().replace('new ObjectId("', '');
+      if (cardOwner !== req.user._id) {
+        const error = new Error('Можно удалять только свои карточки');
+        error.statusCode = errorCodes.ForbiddenError;
+        throw error;
+      } else {
+        Card.findByIdAndRemove(req.params.id)
+          // eslint-disable-next-line no-shadow
+          .then((card) => res.send({ data: card }));
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(errorCodes.ValidationError).send({ message: 'Переданы некорректные данные для удаления карточки' });
       } else if (err.statusCode === 404) {
         res.status(errorCodes.NotFoundError).send({ message: 'Карточка с указанным id не найдена' });
+      } else if (err.statusCode === 403) {
+        res.status(errorCodes.ForbiddenError).send({ message: 'Можно удалять только свои карточки' });
       } else {
         res.status(errorCodes.DefaultError).send({ message: 'Произошла ошибка' });
       }
