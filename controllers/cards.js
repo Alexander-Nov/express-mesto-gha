@@ -16,7 +16,8 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.statusCode === errorCodes.ValidationError) {
+      // eslint-disable-next-line no-underscore-dangle
+      if (err.statusCode === errorCodes.ValidationError || err._message === 'card validation failed') {
         throw new ValidationError('Введены некорректные данные при создании карточки');
       } else {
         next(err);
@@ -75,11 +76,6 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    // .orFail(() => {
-    //   const error = new Error('Карточка по заданному id отсутствует в базе');
-    //   error.statusCode = 404;
-    //   throw error;
-    // })
     .then((card) => {
       res.send({ data: card });
     })
@@ -91,7 +87,8 @@ const dislikeCard = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports = {

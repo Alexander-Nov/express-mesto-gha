@@ -7,8 +7,6 @@ const ValidationError = require('../errors/ValidationError');
 const DuplicateError = require('../errors/DuplicateError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
-// const duplicateErrorCode = 11000;
-
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
@@ -39,7 +37,7 @@ const createUser = (req, res, next) => {
       // eslint-disable-next-line no-underscore-dangle
       if (err.statusCode === errorCodes.ValidationError || err._message === 'user validation failed') {
         throw new ValidationError('Переданы некорректные данные при создании пользователя');
-      } else if (err.code === 11000) {
+      } else if (err.code === errorCodes.DuplicateErrorCode) {
         throw new DuplicateError('Пользователь с указанным email уже существует');
       } else {
         next(err);
