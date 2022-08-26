@@ -2,9 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const errorCodes = require('./errors/errorCodes');
+// const errorCodes = require('./errors/errorCodes');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const UnauthorizedError = require('./errors/UnauthorizedError');
 
 const { PORT = 3000 } = process.env;
 
@@ -38,8 +39,9 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use('*', (req, res) => {
-  res.status(errorCodes.UnAuthorizedError).send({ message: 'Ошибка авторизации' });
+app.use('*', () => {
+  throw new UnauthorizedError('Ошибка авторизации');
+  // res.status(errorCodes.UnAuthorizedError).send({ message: 'Ошибка авторизации' });
 });
 
 app.use(errors()); // обработчик ошибок celebrate
