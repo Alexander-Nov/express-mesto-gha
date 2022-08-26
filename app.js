@@ -7,6 +7,9 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const UnauthorizedError = require('./errors/UnauthorizedError');
 
+// eslint-disable-next-line prefer-regex-literals
+const urlRegExp = new RegExp('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w.-]+)+[\\w\\-._~:/?#[\\]@!$&\'()*+,;=.]+$');
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -27,7 +30,9 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/https?:\/\/(www)?(\.)?([0-9а-яa-zё]{1,})?(\.)?([0-9а-яa-zё]{1,})?(\.)?[0-9а-яa-zё]{1,}\.[а-яa-zё]{2,4}[a-zа-яё\-._~:/?#[\]@!$&'()*+,;=]*#?/i),
+    avatar: Joi.string()
+      .pattern(urlRegExp)
+      .message('Поле "avatar" должно быть валидным url-адресом'),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
