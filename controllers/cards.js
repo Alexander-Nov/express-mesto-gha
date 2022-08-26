@@ -41,7 +41,6 @@ const deleteCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       if (err.statusCode === ValidationError || err.name === 'CastError') {
         throw new ValidationError('Переданы некорректные данные для удаления карточки');
       } else if (err.statusCode === errorCodes.NotFoundError) {
@@ -61,12 +60,11 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка с указанным _id не найдена');
+        throw new NotFoundError('Карточка с указанным id не найдена');
       }
       return res.send(card);
     })
     .catch((err) => {
-      console.log(err);
       if (err.statusCode === ValidationError || err.name === 'CastError') {
         throw new ValidationError('Переданы некорректные данные для постановки лайка');
       } else if (err.statusCode === errorCodes.NotFoundError) {

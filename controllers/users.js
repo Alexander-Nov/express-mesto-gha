@@ -113,23 +113,6 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-// const login = (req, res, next) => {
-//   const { email, password } = req.body;
-//   User.findUserByCredentials(email, password)
-//     .then((user) => {
-//       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-//       res.send({ token });
-//     })
-//     .catch((err) => {
-//       if (err.statusCode === errorCodes.UnAuthorizedError) {
-//         throw new UnauthorizedError('Авторизация не пройдена');
-//       } else {
-//         next(err);
-//       }
-//     })
-//     .catch(next);
-// };
-
 const getUserProfile = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)

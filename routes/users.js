@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-// const { ObjectId } = require('mongoose').Types;
 
 const {
   getUsers, getUserById, updateUserProfile, updateUserAvatar, getUserProfile,
