@@ -59,6 +59,7 @@ const likeCard = (req, res, next) => {
       res.send(card);
     })
     .catch((err) => {
+      console.log(err);
       if (err.statusCode === ValidationError || err.name === 'CastError') {
         throw new ValidationError('Переданы некорректные данные для постановки лайка');
       } else if (err.statusCode === errorCodes.NotFoundError) {

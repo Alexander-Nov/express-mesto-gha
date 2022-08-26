@@ -22,7 +22,6 @@ const getUserById = (req, res, next) => {
       res.send(user.deletePasswordFromUser());
     })
     .catch((err) => {
-      console.log(err);
       if (err.kind === 'ObjectId') {
         throw new ValidationError('Неправильный формат id');
       } else if (err.statusCode === errorCodes.NotFoundError) {
