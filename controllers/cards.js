@@ -34,7 +34,13 @@ const deleteCard = (req, res, next) => {
         throw new ForbiddenError('Можно удалять только свои карточки');
       } else {
         Card.findByIdAndRemove(req.params.id)
-          .then((removedCard) => res.send(removedCard));
+          // .then((removedCard) => res.send(removedCard))
+          .then((removedCard) => {
+            if (!removedCard) {
+              throw new NotFoundError('Карточка с указанным _id не найдена');
+            }
+            return res.send(removedCard);
+          });
       }
     })
     .catch((err) => {

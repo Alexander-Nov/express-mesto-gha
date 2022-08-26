@@ -5,7 +5,8 @@ const { celebrate, Joi, errors } = require('celebrate');
 // const errorCodes = require('./errors/errorCodes');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const UnauthorizedError = require('./errors/UnauthorizedError');
+// const UnauthorizedError = require('./errors/UnauthorizedError');
+const NotFoundError = require('./errors/NotFoundError');
 
 // eslint-disable-next-line prefer-regex-literals
 const urlRegExp = new RegExp('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w.-]+)+[\\w\\-._~:/?#[\\]@!$&\'()*+,;=.]+$');
@@ -45,7 +46,8 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', () => {
-  throw new UnauthorizedError('Ошибка авторизации');
+  // throw new UnauthorizedError('Ошибка авторизации');
+  throw new NotFoundError('Данные по указанному запросу не существуют');
   // res.status(errorCodes.UnAuthorizedError).send({ message: 'Ошибка авторизации' });
 });
 
