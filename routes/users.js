@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { ObjectId } = require('mongoose').Types;
+// const { ObjectId } = require('mongoose').Types;
 
 const {
   getUsers, getUserById, updateUserProfile, updateUserAvatar, getUserProfile,
@@ -12,16 +12,8 @@ router.get('/me', getUserProfile);
 
 router.get('/:id', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required().custom((value, helpers) => {
-      if (ObjectId.isValid(value)) {
-        return value;
-      }
-      return helpers.message('Невалидный id пользователя');
-    }),
+    id: Joi.string().required(),
   }),
-  headers: Joi.object().keys({
-    authorization: Joi.string().min(2).max(200).required(),
-  }).unknown(),
 }), getUserById);
 
 router.patch('/me', celebrate({
