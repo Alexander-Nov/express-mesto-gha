@@ -22,9 +22,10 @@ const getUserById = (req, res, next) => {
       res.send(user.deletePasswordFromUser());
     })
     .catch((err) => {
+      console.log(err);
       if (err.statusCode === errorCodes.NotFoundError) {
         throw new NotFoundError('Пользователь по указанному id не найден');
-      } else if (err.statusCode === ValidationError) {
+      } else if (err.statusCode === ValidationError || err.name === 'CastError') {
         throw new ValidationError('Введены некорректные данные пользователя');
       } else {
         next(err);
