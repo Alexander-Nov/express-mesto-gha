@@ -32,7 +32,7 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send(user))
+    .then((user) => res.send(user.deletePasswordFromUser()))
     .catch((err) => {
       // eslint-disable-next-line no-underscore-dangle
       if (err.statusCode === errorCodes.ValidationError || err._message === 'user validation failed') {
@@ -88,7 +88,7 @@ const login = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      if (err.statusCode === errorCodes.UnauthorizedError) {
+      if (err.statusCode === errorCodes.UnAuthorizedError) {
         throw new UnauthorizedError('Авторизация не пройдена');
       } else {
         next(err);
