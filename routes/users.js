@@ -11,17 +11,9 @@ router.get('/', celebrate({
   }).unknown(true),
 }), getUsers);
 
-router.get('/me', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().min(2).max(200).required(),
-  }).unknown(true),
-}), getUserProfile);
+router.get('/me', getUserProfile);
 
-router.get('/:id', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().min(2).max(200).required(),
-  }).unknown(true),
-}), getUserById);
+router.get('/:id', getUserById);
 
 router.patch('/me', celebrate({
   body: Joi.object().keys({
