@@ -5,11 +5,7 @@ const {
   getUsers, getUserById, updateUserProfile, updateUserAvatar, getUserProfile,
 } = require('../controllers/users');
 
-router.get('/', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().min(2).max(200).required(),
-  }).unknown(true),
-}), getUsers);
+router.get('/', getUsers);
 
 router.get('/me', getUserProfile);
 
@@ -20,15 +16,8 @@ router.patch('/me', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }).unknown(true),
-  headers: Joi.object().keys({
-    authorization: Joi.string().min(2).max(200).required(),
-  }).unknown(true),
 }), updateUserProfile);
 
-router.patch('/me/avatar', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().min(2).max(200).required(),
-  }).unknown(true),
-}), updateUserAvatar);
+router.patch('/me/avatar', updateUserAvatar);
 
 module.exports = router;
