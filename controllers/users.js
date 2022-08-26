@@ -8,7 +8,7 @@ const DuplicateError = require('../errors/DuplicateError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const getUsers = (req, res, next) => {
-  User.find({})
+  User.find({}, { password: 0 })
     .then((users) => res.send(users))
     .catch(next);
 };
@@ -19,7 +19,7 @@ const getUserById = (req, res, next) => {
       throw new NotFoundError('Пользователь по заданному id отсутствует в базе');
     })
     .then((user) => {
-      res.send({ user });
+      res.send(user);
     })
     .catch(next);
 };
@@ -82,20 +82,42 @@ const updateUserAvatar = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
+
+  User.findOne({ email }).select('+password')
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.send({ token });
-    })
-    .catch((err) => {
-      if (err.statusCode === errorCodes.UnAuthorizedError) {
-        throw new UnauthorizedError('Авторизация не пройдена');
-      } else {
-        next(err);
+      if (!user) {
+        throw new UnauthorizedError('Неправильные почта или пароль');
       }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new UnauthorizedError('Неправильные почта или пароль');
+          }
+          const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+
+          res.send({ token });
+        })
+        .catch(next);
     })
     .catch(next);
 };
+
+// const login = (req, res, next) => {
+//   const { email, password } = req.body;
+//   User.findUserByCredentials(email, password)
+//     .then((user) => {
+//       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+//       res.send({ token });
+//     })
+//     .catch((err) => {
+//       if (err.statusCode === errorCodes.UnAuthorizedError) {
+//         throw new UnauthorizedError('Авторизация не пройдена');
+//       } else {
+//         next(err);
+//       }
+//     })
+//     .catch(next);
+// };
 
 const getUserProfile = (req, res, next) => {
   const userId = req.user._id;
