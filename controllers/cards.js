@@ -56,7 +56,10 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      res.send(card);
+      if (!card) {
+        throw new NotFoundError('Карточка с указанным _id не найдена');
+      }
+      return res.send(card);
     })
     .catch((err) => {
       console.log(err);
@@ -78,7 +81,10 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      res.send(card);
+      if (!card) {
+        throw new NotFoundError('Карточка с указанным _id не найдена');
+      }
+      return res.send(card);
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
