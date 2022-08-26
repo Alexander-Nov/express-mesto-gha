@@ -6,6 +6,9 @@ const {
   getUsers, getUserById, updateUserProfile, updateUserAvatar, getUserProfile,
 } = require('../controllers/users');
 
+// eslint-disable-next-line prefer-regex-literals
+const urlRegExp = new RegExp('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w.-]+)+[\\w\\-._~:/?#[\\]@!$&\'()*+,;=.]+$');
+
 router.get('/', getUsers);
 
 router.get('/me', getUserProfile);
@@ -23,6 +26,12 @@ router.patch('/me', celebrate({
   }).unknown(true),
 }), updateUserProfile);
 
-router.patch('/me/avatar', updateUserAvatar);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string()
+      .pattern(urlRegExp)
+      .message('Поле "avatar" должно быть валидным url-адресом'),
+  }),
+}), updateUserAvatar);
 
 module.exports = router;
