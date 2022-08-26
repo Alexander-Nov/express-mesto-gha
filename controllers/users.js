@@ -9,7 +9,7 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -32,7 +32,7 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send({ user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       // eslint-disable-next-line no-underscore-dangle
       if (err.statusCode === errorCodes.ValidationError || err._message === 'user validation failed') {
@@ -49,7 +49,7 @@ const createUser = (req, res, next) => {
 const updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send({ user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.statusCode === errorCodes.NotFoundError) {
         throw new NotFoundError('Пользователь по указанному id не найден');
@@ -66,7 +66,7 @@ const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.statusCode === errorCodes.NotFoundError) {
@@ -101,7 +101,7 @@ const getUserProfile = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
-      res.send({ user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {

@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 
 const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
@@ -14,7 +14,7 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       // eslint-disable-next-line no-underscore-dangle
       if (err.statusCode === errorCodes.ValidationError || err._message === 'card validation failed') {
@@ -34,7 +34,7 @@ const deleteCard = (req, res, next) => {
         throw new ForbiddenError('Можно удалять только свои карточки');
       } else {
         Card.findByIdAndRemove(req.params.id)
-          .then((removedCard) => res.send({ data: removedCard }));
+          .then((removedCard) => res.send(removedCard));
       }
     })
     .catch((err) => {
@@ -56,7 +56,7 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
@@ -77,7 +77,7 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
