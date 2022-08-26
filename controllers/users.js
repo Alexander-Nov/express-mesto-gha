@@ -19,7 +19,15 @@ const getUserById = (req, res, next) => {
       throw new NotFoundError('Пользователь по заданному id отсутствует в базе');
     })
     .then((user) => {
-      res.send(user);
+      res.send(user.deletePasswordFromUser());
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-underscore-dangle
+      if (err.statusCode === errorCodes.ValidationError || err._message === 'user validation failed') {
+        throw new ValidationError('Переданы некорректные данные пользователя');
+      } else {
+        next(err);
+      }
     })
     .catch(next);
 };
@@ -49,7 +57,7 @@ const createUser = (req, res, next) => {
 const updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send(user))
+    .then((user) => res.send(user.deletePasswordFromUser()))
     .catch((err) => {
       if (err.statusCode === errorCodes.NotFoundError) {
         throw new NotFoundError('Пользователь по указанному id не найден');
@@ -66,7 +74,7 @@ const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
-      res.send(user);
+      res.send(user.deletePasswordFromUser());
     })
     .catch((err) => {
       if (err.statusCode === errorCodes.NotFoundError) {
@@ -123,7 +131,7 @@ const getUserProfile = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
-      res.send(user);
+      res.send(user.deletePasswordFromUser());
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
