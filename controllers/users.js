@@ -15,15 +15,17 @@ const getUsers = (req, res, next) => {
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.id)
-    // .orFail(() => {
-    //   throw new NotFoundError('Пользователь по заданному id отсутствует в базе');
-    // })
+    .orFail(() => {
+      throw new NotFoundError('Пользователь по заданному id отсутствует в базе');
+    })
     .then((user) => {
       res.send(user.deletePasswordFromUser());
     })
     .catch((err) => {
       console.log(err);
-      if (err.statusCode === errorCodes.NotFoundError) {
+      if (err.kind === 'ObjectId') {
+        throw new ValidationError('Неправильный формат id');
+      } else if (err.statusCode === errorCodes.NotFoundError) {
         throw new NotFoundError('Пользователь по указанному id не найден');
       } else if (err.statusCode === ValidationError || err.name === 'CastError') {
         throw new ValidationError('Введены некорректные данные пользователя');
