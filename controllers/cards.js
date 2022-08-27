@@ -18,12 +18,11 @@ const createCard = (req, res, next) => {
     .catch((err) => {
       // eslint-disable-next-line no-underscore-dangle
       if (err.statusCode === errorCodes.ValidationError || err._message === 'card validation failed') {
-        throw new ValidationError('Введены некорректные данные при создании карточки');
+        next(new ValidationError('Введены некорректные данные при создании карточки'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const deleteCard = (req, res, next) => {
@@ -34,7 +33,7 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       const cardOwner = card.owner.toString().replace('new ObjectId("', '');
       if (cardOwner !== req.user._id) {
-        throw new ForbiddenError('Можно удалять только свои карточки');
+        next(new ForbiddenError('Можно удалять только свои карточки'));
       } else {
         Card.findByIdAndRemove(req.params.id)
           .then((removedCard) => res.send(removedCard));
@@ -42,14 +41,13 @@ const deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
-        throw new ValidationError('Переданы некорректные данные для удаления карточки');
+        next(new ValidationError('Переданы некорректные данные для удаления карточки'));
       } else if (err.statusCode === errorCodes.NotFoundError) {
-        throw new NotFoundError('Карточка с указанным id не найдена');
+        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -60,20 +58,19 @@ const likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка с указанным id не найдена');
+        next(new NotFoundError('Карточка с указанным id не найдена'));
       }
       return res.send(card);
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
-        throw new ValidationError('Переданы некорректные данные для постановки лайка');
+        next(new ValidationError('Переданы некорректные данные для постановки лайка'));
       } else if (err.statusCode === errorCodes.NotFoundError) {
-        throw new NotFoundError('Карточка с указанным id не найдена');
+        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const dislikeCard = (req, res, next) => {
@@ -84,20 +81,19 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка с указанным _id не найдена');
+        next(new NotFoundError('Карточка с указанным _id не найдена'));
       }
       return res.send(card);
     })
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
-        throw new ValidationError('Переданы некорректные данные для удаления лайка');
+        next(new ValidationError('Переданы некорректные данные для удаления лайка'));
       } else if (err.statusCode === errorCodes.NotFoundError) {
-        throw new NotFoundError('Карточка с указанным id не найдена');
+        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports = {
