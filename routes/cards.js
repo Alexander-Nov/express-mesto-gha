@@ -10,7 +10,7 @@ router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     link: Joi.string().required().regex(/https?:\/\/(www)?(\.)?[0-9а-яa-zё]{1,}\.[а-яa-zё]{2,4}[a-zа-яё\-._~:/?#[\]@!$&'()*+,;=]*#?/i),
-  }).unknown(true),
+  }),
 }), createCard);
 
 router.delete('/:id', celebrate({
