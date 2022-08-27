@@ -79,6 +79,10 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(() => {
+      console.log('отловили ошибку поиска');
+      throw new NotFoundError('Карточка с указанным _222id не найдена');
+    })
     .then((card) => {
       if (!card) {
         next(new NotFoundError('Карточка с указанным _id не найдена'));
