@@ -56,12 +56,10 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        next(new NotFoundError('Карточка с указанным id не найдена'));
-      }
-      return res.send(card);
+    .orFail(() => {
+      throw new NotFoundError('Карточка с указанным _222id не найдена');
     })
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для постановки лайка'));
@@ -80,15 +78,9 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => {
-      console.log('отловили ошибку поиска');
       throw new NotFoundError('Карточка с указанным _222id не найдена');
     })
-    .then((card) => {
-      if (!card) {
-        next(new NotFoundError('Карточка с указанным _id не найдена'));
-      }
-      return res.send(card);
-    })
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.statusCode === ValidationError || err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для удаления лайка'));
