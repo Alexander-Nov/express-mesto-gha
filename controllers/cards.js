@@ -1,5 +1,4 @@
 const Card = require('../models/card');
-const errorCodes = require('../errors/errorCodes');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 const ForbiddenError = require('../errors/ForbiddenError');
@@ -17,7 +16,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.send(card))
     .catch((err) => {
       // eslint-disable-next-line no-underscore-dangle
-      if (err.statusCode === errorCodes.ValidationError || err._message === 'card validation failed') {
+      if (err.name === 'ValidationError' || err._message === 'card validation failed') {
         next(new ValidationError('Введены некорректные данные при создании карточки'));
       } else {
         next(err);
@@ -40,10 +39,8 @@ const deleteCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.statusCode === ValidationError || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для удаления карточки'));
-      } else if (err.statusCode === errorCodes.NotFoundError) {
-        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else {
         next(err);
       }
@@ -61,10 +58,8 @@ const likeCard = (req, res, next) => {
     })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.statusCode === ValidationError || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для постановки лайка'));
-      } else if (err.statusCode === errorCodes.NotFoundError) {
-        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else {
         next(err);
       }
@@ -82,10 +77,8 @@ const dislikeCard = (req, res, next) => {
     })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.statusCode === ValidationError || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для удаления лайка'));
-      } else if (err.statusCode === errorCodes.NotFoundError) {
-        next(new NotFoundError('Карточка с указанным id не найдена'));
       } else {
         next(err);
       }
