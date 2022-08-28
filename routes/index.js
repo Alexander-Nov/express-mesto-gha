@@ -28,8 +28,7 @@ router.post('/signup', celebrate({
   }),
 }), createUser);
 
-// авторизация
-router.use(auth);
+router.use(auth); // авторизация
 
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
