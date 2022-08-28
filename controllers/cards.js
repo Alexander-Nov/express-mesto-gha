@@ -27,7 +27,7 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.id)
     .orFail(() => {
-      throw new NotFoundError('Карточка с указанным _id не найдена');
+      throw new NotFoundError('Карточка с указанным id не найдена');
     })
     .then((card) => {
       const cardOwner = card.owner.toString().replace('new ObjectId("', '');
@@ -54,7 +54,7 @@ const likeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => {
-      throw new NotFoundError('Карточка с указанным _222id не найдена');
+      throw new NotFoundError('Карточка с указанным id не найдена');
     })
     .then((card) => res.send(card))
     .catch((err) => {
@@ -73,7 +73,7 @@ const dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => {
-      throw new NotFoundError('Карточка с указанным _222id не найдена');
+      throw new NotFoundError('Карточка с указанным id не найдена');
     })
     .then((card) => res.send(card))
     .catch((err) => {

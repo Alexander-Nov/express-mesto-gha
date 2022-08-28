@@ -56,9 +56,7 @@ const updateUserProfile = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send(user.deletePasswordFromUser()))
     .catch((err) => {
-      if (err.statusCode === errorCodes.NotFoundError) {
-        next(new NotFoundError('Пользователь по указанному id не найден'));
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new ValidationError('Введены некорректные данные при обновлении пользователя'));
       } else {
         next(err);
