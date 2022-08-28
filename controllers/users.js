@@ -71,9 +71,7 @@ const updateUserAvatar = (req, res, next) => {
       res.send(user.deletePasswordFromUser());
     })
     .catch((err) => {
-      if (err.statusCode === errorCodes.NotFoundError) {
-        next(new NotFoundError('Пользователь по указанному id не найден'));
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new ValidationError('Введены некорректные данные аватара пользователя'));
       } else {
         next(err);
@@ -108,13 +106,7 @@ const getUserProfile = (req, res, next) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      if (err.statusCode === errorCodes.NotFoundError) {
-        next(new NotFoundError('Пользователь по указанному id не найден'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {
