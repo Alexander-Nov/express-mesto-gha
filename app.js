@@ -23,24 +23,9 @@ const options = {
   credentials: true,
 };
 
-// const allowedCors = [
-//   'http://localhost:3010',
-//   'http://novoselov.nomorepartiesxyz.ru',
-//   'localhost:3010',
-// ];
-
 const app = express();
 
 app.use('*', cors(options));
-
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
-
-//   next();
-// });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,6 +33,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(requestLogger); // подключаем логгер запросов
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.use(routes);
 
