@@ -42,7 +42,6 @@ const createUser = (req, res, next) => {
     }))
     .then((user) => res.send(user.deletePasswordFromUser()))
     .catch((err) => {
-      // eslint-disable-next-line no-underscore-dangle
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные при создании пользователя'));
       } else if (err.code === errorCodes.DuplicateErrorCode) {
@@ -97,7 +96,6 @@ const login = (req, res, next) => {
           const token = jwt.sign(
             { _id: user._id },
             NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-            // 'dev-secret',
             { expiresIn: '7d' },
           );
 
