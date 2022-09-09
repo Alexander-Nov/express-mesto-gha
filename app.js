@@ -35,7 +35,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(requestLogger); // подключаем логгер запросов
 
 app.get('/my-secret', (req, res) => {
-  res.send({ my_secret: JWT_SECRET });
+  res.send(JWT_SECRET);
 });
 
 app.get('/crash-test', () => {
