@@ -6,8 +6,6 @@ const auth = require('../middlewares/auth');
 const NotFoundError = require('../errors/NotFoundError');
 const { createUser, login } = require('../controllers/users');
 
-const { JWT_SECRET } = process.env;
-
 // eslint-disable-next-line prefer-regex-literals
 const urlRegExp = new RegExp('^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w.-]+)+[\\w\\-._~:/?#[\\]@!$&\'()*+,;=.]+$');
 
@@ -31,10 +29,6 @@ router.post('/signup', celebrate({
 }), createUser);
 
 router.use(auth); // авторизация
-
-router.get('/my-secret', (req, res) => {
-  res.send({ my_secret: JWT_SECRET });
-});
 
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
