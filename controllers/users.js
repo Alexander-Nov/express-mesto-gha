@@ -98,8 +98,8 @@ const login = (req, res, next) => {
             NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
             { expiresIn: '7d' },
           );
-          const keyCheck = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
-          res.send({ token, keyCheck });
+
+          res.send({ token });
         });
     })
     .catch(next);
