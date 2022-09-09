@@ -30,11 +30,11 @@ router.post('/signup', celebrate({
   }),
 }), createUser);
 
+router.use(auth); // авторизация
+
 router.get('/my-secret', (req, res) => {
   res.send({ my_secret: JWT_SECRET });
 });
-
-router.use(auth); // авторизация
 
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
