@@ -12,8 +12,8 @@ const { PORT = 3000 } = process.env;
 
 const options = {
   origin: [
-    'http://localhost:3010',
-    'http://novoselov.nomorepartiesxyz.ru',
+    'https://localhost:3010',
+    'https://novoselov.nomorepartiesxyz.ru',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
